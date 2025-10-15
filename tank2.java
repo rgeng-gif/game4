@@ -7,8 +7,8 @@ public class tank2 extends tank {
 	
 	
 
-    public tank2(Point position, Color color) {
-        super(position, color, 180);
+    public tank2(Point position, Color color, Walls walls) {
+        super(position, color, 180, walls);
     }
 
     @Override
