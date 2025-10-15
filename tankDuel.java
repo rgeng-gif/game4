@@ -1,6 +1,9 @@
 package game;
 
 import javax.swing.*;
+
+import game.Point;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -8,6 +11,7 @@ public class tankDuel extends JPanel implements KeyListener {
 
     private tank player1;   // Green tank
     private tank2 player2;  // Red tank
+    private Walls walls; //walls restricting movement of tanks and bullets
     private boolean running = true;
     private boolean gameOver = false;
 
@@ -46,8 +50,9 @@ public class tankDuel extends JPanel implements KeyListener {
 
     /** Resets both tanks and starts a new game */
     private void startNewGame() {
-        player1 = new tank(new Point(100, 500), Color.GREEN);
-        player2 = new tank2(new Point(700, 100), Color.RED);
+    	walls = new Walls();
+        player1 = new tank(new Point(100, 500), Color.GREEN, walls);
+        player2 = new tank2(new Point(700, 100), Color.RED, walls);
         gameOver = false;
     }
 
@@ -56,11 +61,12 @@ public class tankDuel extends JPanel implements KeyListener {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         // Draw alive tanks
-        if (player1 != null) player1.draw(g2);
-        if (player2 != null) player2.draw(g2);
-
+        if (player1 != null && player2 != null) {
+        	player1.draw(g2);
+        	player2.draw(g2);
+        	walls.draw(g2);
+        }
         // Draw endgame text
         if (gameOver) {
             g2.setColor(Color.BLACK);
