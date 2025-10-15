@@ -8,6 +8,7 @@ public class tank extends Polygon {
     private double speed;
     private int health;
     private Color color;
+    private Walls walls;
 
     protected boolean upPressed, downPressed, leftPressed, rightPressed, shootPressed;
     private ArrayList<Bullet> bullets;
@@ -16,17 +17,19 @@ public class tank extends Polygon {
     private Point barrelTipLocal = new Point(35, 0);
 
     // === Constructor ===
-    public tank(Point position, Color color) {
+    public tank(Point position, Color color, Walls walls) {
         super(createTankShape(), position, 0); // use static method below
+        this.walls = walls;
         this.speed = 2.5;
         this.health = 1;
         this.color = color;
         this.bullets = new ArrayList<>();
     }
     
-    public tank(Point position, Color color, double rotation) {
+    public tank(Point position, Color color, double rotation, Walls walls) {
         super(createTankShape(), position, rotation); // use static method below
         this.speed = 2.5;
+        this.walls = walls;
         this.health = 1;
         this.color = color;
         this.bullets = new ArrayList<>();
@@ -79,11 +82,11 @@ public class tank extends Polygon {
         double radians = Math.toRadians(rotation);
         
         
-        if (upPressed) {
+        if (upPressed && !walls.collisionCheck(this)) {
             position.x += Math.cos(radians) * speed;
             position.y += Math.sin(radians) * speed;
         }
-        if (downPressed) {
+        if (downPressed && !walls.collisionCheck(this)) {
             position.x -= Math.cos(radians) * speed;
             position.y -= Math.sin(radians) * speed;
         }
@@ -157,6 +160,10 @@ public class tank extends Polygon {
     public void checkBulletCollision(tank other) {
         for (int i = 0; i < bullets.size(); i++) {
             Bullet b = bullets.get(i);
+            if(walls.collisionCheck(b)) {
+            	bullets.remove(i);
+            	i--;
+            }
             if (other.isAlive() && other.getBound().intersects(b.getBounds())) {
                 other.takeDamage(10);
                 bullets.remove(i);
@@ -204,6 +211,9 @@ public class tank extends Polygon {
 
         public Rectangle getBounds() {
             return new Rectangle((int) position.x - SIZE / 2, (int) position.y - SIZE / 2, SIZE, SIZE);
+        }
+        public Point getPosition() {
+        	return position;
         }
     }
 }
