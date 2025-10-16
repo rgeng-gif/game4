@@ -93,8 +93,8 @@ public class tank extends Polygon {
 
 
         if (shootPressed && System.currentTimeMillis() - lastShotTime > fireCooldown) {
-        	
-            bullets.add(new Bullet(new Point(position.x, position.y), rotation));
+        	Point p = this.findCenter();
+            bullets.add(new Bullet(new Point(p.x + position.x, p.y + position.y), rotation));
             lastShotTime = System.currentTimeMillis();
             
         }
@@ -115,6 +115,10 @@ public class tank extends Polygon {
     }
     // === Draw ===
     public void draw(Graphics2D g) {
+    	// Draw bullets
+        for (Bullet b : bullets) {
+            b.draw(g);
+        }
         Point[] pts = getPoints();
         int[] xs = new int[pts.length];
         int[] ys = new int[pts.length];
@@ -127,11 +131,6 @@ public class tank extends Polygon {
         g.fillPolygon(xs, ys, pts.length);
         g.setColor(Color.BLACK);
         g.drawPolygon(xs, ys, pts.length);
-
-        // Draw bullets
-        for (Bullet b : bullets) {
-            b.draw(g);
-        }
     }
 
 
